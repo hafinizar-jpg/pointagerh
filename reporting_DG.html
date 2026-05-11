@@ -6,7 +6,8 @@
 <title>Reporting DG - PointageRH</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<style>*{box-sizing:border-box;margin:0;padding:0}
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f0;color:#1a1a1a}
 .header{background:#1a1a1a;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
 .header-title{font-size:17px;font-weight:700}
@@ -18,10 +19,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f0;color:#1a
 .stat-label{font-size:11px;color:#999;margin-bottom:5px}
 .stat-value{font-size:26px;font-weight:700}
 .stat-sub{font-size:11px;color:#bbb;margin-top:3px}
-.tabs{display:flex;gap:3px;background:#f8f7f2;border:1px solid #e8e6df;border-radius:8px;padding:3px;margin-bottom:16px;width:fit-content}
-.tab{padding:7px 16px;border-radius:6px;border:none;background:none;cursor:pointer;font-size:13px;color:#666;font-family:inherit}
-.tab:hover{background:#eeeee8;color:#1a1a1a}
-.tab.active{background:#fff;color:#1a1a1a;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:12px 22px;border-radius:10px;border:none;cursor:pointer;font-size:15px;font-weight:600;font-family:inherit;transition:all .2s;color:#fff;opacity:.75}
+.tab:hover{opacity:1;transform:translateY(-2px)}
+.tab.active{opacity:1;box-shadow:0 4px 12px rgba(0,0,0,.2);transform:translateY(-2px)}
+.tab-blue{background:#185FA5;}
+.tab-red{background:#A32D2D;}
+.tab-green{background:#3B6D11;}
+.tab-purple{background:#534AB7;}
 .panel{display:none}
 .panel.active{display:block}
 .tw{border:1px solid #e8e6df;border-radius:10px;overflow:hidden;margin-bottom:16px}
@@ -37,20 +42,18 @@ tr:hover td{background:#fafaf7}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#1a1a1a;font-family:inherit}
 .btn:hover{background:#f5f5f0}
 .bk{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-@media(max-width:800px){.stats-grid{grid-template-columns:repeat(2,1fr)}}</style>
+@media(max-width:800px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
-
 <div class="header">
-  <div class="header-title">&#128200; Reporting DG - PointageRH - 10 sites</div>
+  <div class="header-title">Reporting DG - PointageRH - 10 sites</div>
   <div class="header-right">
     <span id="clock">--:--</span>
     <button class="btn" style="background:#333;color:#fff;border-color:#555" onclick="exportCSV()">Export CSV global</button>
   </div>
 </div>
-
 <div class="content">
-
   <div class="fb-bar">
     <div>
       <div style="font-size:12px;color:#999;margin-bottom:3px">Statut Firebase</div>
@@ -64,51 +67,43 @@ tr:hover td{background:#fafaf7}
       <button class="btn bk" onclick="startListener()">Actualiser</button>
     </div>
   </div>
-
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-label">Total salaries</div><div class="stat-value" id="g-emp">0</div><div class="stat-sub">10 sites</div></div>
-    <div class="stat-card"><div class="stat-label">Presents ce jour</div><div class="stat-value" id="g-pres">0</div><div class="stat-sub">Pointes aujourd hui</div></div>
+    <div class="stat-card"><div class="stat-label">Presents ce jour</div><div class="stat-value" id="g-pres">0</div><div class="stat-sub">Pointes</div></div>
     <div class="stat-card"><div class="stat-label">Absents ce jour</div><div class="stat-value" id="g-abs">0</div><div class="stat-sub">Non pointes</div></div>
     <div class="stat-card"><div class="stat-label">Retards ce jour</div><div class="stat-value" id="g-ret">0</div><div class="stat-sub">Arrivees tardives</div></div>
   </div>
-
   <div class="tabs">
-    <button class="tab active" onclick="showTab('vue-globale',this)">Vue globale</button>
-    <button class="tab" onclick="showTab('absents',this)">Absents (<span id="nb-abs">0</span>)</button>
-    <button class="tab" onclick="showTab('presents',this)">Presents (<span id="nb-pres">0</span>)</button>
-    <button class="tab" onclick="showTab('historique',this)">Historique</button>
+    <button class="tab tab-blue active" onclick="showTab('vue-globale',this)">&#128202; Vue globale</button>
+    <button class="tab tab-red" onclick="showTab('absents',this)">&#10060; Absents (<span id="nb-abs">0</span>)</button>
+    <button class="tab tab-green" onclick="showTab('presents',this)">&#9989; Presents (<span id="nb-pres">0</span>)</button>
+    <button class="tab tab-purple" onclick="showTab('historique',this)">&#128203; Historique</button>
   </div>
-
   <div class="panel active" id="panel-vue-globale">
     <div class="tw"><table>
       <thead><tr><th>Site</th><th>Salaries</th><th>Presents</th><th>Absents</th><th>Retards</th><th>Derniere sync</th><th>Statut</th></tr></thead>
       <tbody id="sites-tbody"></tbody>
     </table></div>
   </div>
-
   <div class="panel" id="panel-absents">
     <div class="tw"><table>
       <thead><tr><th>Site</th><th>Salarie</th><th>Poste</th><th>Departement</th><th>Statut</th></tr></thead>
       <tbody id="abs-tbody"></tbody>
     </table></div>
   </div>
-
   <div class="panel" id="panel-presents">
     <div class="tw"><table>
       <thead><tr><th>Site</th><th>Salarie</th><th>Arrivee</th><th>Depart</th><th>Statut</th></tr></thead>
       <tbody id="pres-tbody"></tbody>
     </table></div>
   </div>
-
   <div class="panel" id="panel-historique">
     <div class="tw"><table>
       <thead><tr><th>Site</th><th>Salarie</th><th>Type</th><th>Heure</th><th>Date</th></tr></thead>
       <tbody id="hist-tbody"></tbody>
     </table></div>
   </div>
-
 </div>
-
 <script>
 function showTab(id,el){
   document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active");});
