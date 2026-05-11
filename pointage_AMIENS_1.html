@@ -1309,7 +1309,7 @@ setInterval(syncNow,300000);
 </script>
 </body>
 </html<script>
-var SITE_NAME = "COIGNIERES";
+var SITE_NAME = "AMIENS 1";
 var QRCodeGen=(function(){"use strict";
 function QR(text,size,dc,lc){var modules=gM(text);var n=modules.length;var canvas=document.createElement("canvas");var scale=Math.floor(size/n);var margin=4;canvas.width=(n+margin*2)*scale;canvas.height=(n+margin*2)*scale;var ctx=canvas.getContext("2d");ctx.fillStyle=lc||"#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle=dc||"#000";for(var y=0;y<n;y++)for(var x=0;x<n;x++)if(modules[y][x])ctx.fillRect((x+margin)*scale,(y+margin)*scale,scale,scale);return canvas;}
 function gM(text){var bytes=utf8(text);var ver=ver4len(bytes.length);var sz=ver*4+17;var mat=newMat(sz);addF(mat,0,0);addF(mat,sz-7,0);addF(mat,0,sz-7);addSep(mat,sz);addAlign(mat,ver,sz);addTiming(mat,sz);mat[4*ver+9][8]=true;rsvFmt(mat,sz);return applyMask(mat,buildData(bytes,ver),sz,ver);}
