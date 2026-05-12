@@ -54,6 +54,7 @@ tr:hover td{background:#fafaf7}
   <div class="header-right">
     <span id="clock">--:--</span>
     <button class="btn" style="background:#333;color:#fff;border-color:#555" onclick="exportCSV()">Export CSV global</button>
+        <button class="btn" style="background:#185FA5;color:#fff;border-color:#185FA5" onclick="exportGlobalJSON()">Sauvegarde JSON globale</button>
   </div>
 </div>
 <div class="content">
@@ -309,6 +310,13 @@ function renderHist(){
   document.getElementById("hist-tbody").innerHTML=rows.slice(0,50).join("")||"<tr><td colspan='5' style='text-align:center;color:#aaa;padding:22px'>Aucun historique</td></tr>";
 }
 
+function exportGlobalJSON(){
+  var data={sites:allData,exportDate:new Date().toISOString(),exportedBy:"Reporting DG"};
+  var a=document.createElement("a");
+  a.href="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(data,null,2));
+  a.download="sauvegarde_globale_DG_"+new Date().toISOString().split("T")[0]+".json";
+  a.click();
+}
 function exportCSV(){
   var td=today();
   var rows=[["Site","Salarie","Poste","Departement","Arrivee","Depart","Statut","Date"]];

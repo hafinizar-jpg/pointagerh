@@ -152,6 +152,7 @@ tr:hover td{background:#fafaf7}
     <div class="sidebar-bottom">
       <div class="sync-st" id="sync-st">Connexion...</div>
       <button class="btn-sync" onclick="syncNow()">Synchroniser</button>
+      <button class="btn-sync" onclick="exportJSON()" style="background:#185FA5;margin-top:5px">Sauvegarder JSON</button>
     </div>
   </div>
   <div class="main">
@@ -1287,6 +1288,14 @@ function renderRep(){
       +"<td>"+(rets>0?"<span class='badge ba'>"+rets+"</span>":"<span class='badge bg'>0</span>")+"</td></tr>";
   }).join("");
 }
+function exportJSON(){
+  var data={employees:employees,pointages:pointages,absences:absences,params:params,siteName:SITE_NAME,exportDate:new Date().toISOString()};
+  var a=document.createElement("a");
+  a.href="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(data,null,2));
+  a.download="sauvegarde_"+SITE_NAME.replace(/\s/g,"_")+"_"+today()+".json";
+  a.click();
+  notif("Sauvegarde JSON telechargee");
+}
 function saveParams(){
   params.co=document.getElementById("p-co").value;
   params.tol=parseInt(document.getElementById("p-tol").value)||5;
@@ -2144,6 +2153,14 @@ function renderRep(){
       +"<td>8h</td><td>8h</td><td>8h</td><td>8h</td><td>7h</td><td><strong>39h</strong></td>"
       +"<td>"+(rets>0?"<span class='badge ba'>"+rets+"</span>":"<span class='badge bg'>0</span>")+"</td></tr>";
   }).join("");
+}
+function exportJSON(){
+  var data={employees:employees,pointages:pointages,absences:absences,params:params,siteName:SITE_NAME,exportDate:new Date().toISOString()};
+  var a=document.createElement("a");
+  a.href="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(data,null,2));
+  a.download="sauvegarde_"+SITE_NAME.replace(/\s/g,"_")+"_"+today()+".json";
+  a.click();
+  notif("Sauvegarde JSON telechargee");
 }
 function saveParams(){
   params.co=document.getElementById("p-co").value;
