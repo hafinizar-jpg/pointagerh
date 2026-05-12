@@ -145,6 +145,8 @@ tr:hover td{background:#fafaf7}
       <div class="nav-item" onclick="go('employes',this)">Salaries</div>
       <div class="nav-item" onclick="go('historique',this)">Historique</div>
       <div class="nav-item" onclick="go('rapports',this)">Rapports</div>
+      <div class="nav-item" onclick="go('planning',this)">Planning semaine</div>
+      <div class="nav-item" onclick="go('statistiques',this)">Statistiques</div>
       <div class="nav-item" onclick="go('absences',this)">Absences</div>
       <div class="nav-item" onclick="go('paie',this)">Fiche de paie</div>
       <div class="nav-item" onclick="go('parametres',this)">Parametres</div>
@@ -152,7 +154,8 @@ tr:hover td{background:#fafaf7}
     <div class="sidebar-bottom">
       <div class="sync-st" id="sync-st">Connexion...</div>
       <button class="btn-sync" onclick="syncNow()">Synchroniser</button>
-      <button class="btn-sync" onclick="exportJSON()" style="background:#185FA5;margin-top:5px">Sauvegarder JSON</button>
+      <button class="btn-sync" onclick="exportExcel()" style="background:#185FA5;margin-top:5px">Sauvegarder Excel</button>
+      <button class="btn-sync" onclick="exportJSON()" style="background:#534AB7;margin-top:5px">Sauvegarder JSON</button>
     </div>
   </div>
   <div class="main">
@@ -275,7 +278,7 @@ tr:hover td{background:#fafaf7}
           <button class="btn" onclick="renderHist()">Filtrer</button>
           <button class="btn" onclick="exportCSV()">Export CSV</button>
         </div>
-        <div class="tw"><table><thead><tr><th>Salarie</th><th>Dept</th><th>Date</th><th>Arrivee</th><th>Depart</th><th>Duree</th><th>Statut</th><th>GPS</th><th>Photo</th></tr></thead><tbody id="hist-tbody"></tbody></table></div>
+        <div class="tw"><table><thead><tr><th>Salarie</th><th>Dept</th><th>Date</th><th>Arrivee</th><th>Depart</th><th>Duree</th><th>Statut</th><th>GPS</th><th>Photo</th><th>Commentaire</th></tr></thead><tbody id="hist-tbody"></tbody></table></div>
       </div>
 
       <div class="page" id="page-rapports">
@@ -291,6 +294,33 @@ tr:hover td{background:#fafaf7}
           <button class="btn" onclick="window.print()">Imprimer</button>
           <button class="btn bk" onclick="syncNow()">Sync DG</button>
         </div>
+      </div>
+
+      <!-- PLANNING SEMAINE -->
+      <div class="page" id="page-planning">
+        <div class="sh">
+          <div class="st" style="margin:0">Planning semaine en cours</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" onclick="renderPlanning()">Actualiser</button>
+            <button class="btn" onclick="window.print()">Imprimer</button>
+          </div>
+        </div>
+        <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:9px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#3B6D11">
+          Vert = Present | Bleu = En cours | Rouge = Absent | Gris = Repos | Couleur = Conge
+        </div>
+        <div id="planning-container"></div>
+      </div>
+
+      <!-- STATISTIQUES -->
+      <div class="page" id="page-statistiques">
+        <div class="sh">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="st" style="margin:0">Statistiques</div>
+            <select id="stats-mois" class="sel" style="width:160px;margin:0" onchange="renderStats()"></select>
+          </div>
+          <button class="btn" onclick="renderStats()">Actualiser</button>
+        </div>
+        <div id="stats-container"></div>
       </div>
 
       <!-- ABSENCES -->
@@ -387,6 +417,11 @@ tr:hover td{background:#fafaf7}
             <div class="fg" style="margin-bottom:11px"><label>Rayon autorise (metres)</label><input id="p-radius" value="150" type="number"></div>
             <button class="btn" onclick="detectPos()">Detecter position du site</button>
             <div id="pos-st" style="font-size:12px;color:#999;margin-top:6px"></div>
+          </div>
+          <div style="border-top:1px solid #e8e6df;margin:16px 0;padding-top:16px">
+            <div style="font-size:13px;font-weight:600;margin-bottom:12px">Parametres RH</div>
+            <div class="fg" style="margin-bottom:13px"><label>Jours de CP annuels par salarie</label><input id="p-cp" value="25" type="number" min="0" max="50"></div>
+            <div class="fg" style="margin-bottom:13px"><label>Mot de passe administrateur</label><input id="p-pass" type="password" placeholder="Mot de passe admin" value="1234"></div>
           </div>
           <button class="btn bk" onclick="saveParams()">Enregistrer</button>
         </div>
@@ -667,6 +702,8 @@ function tick(){
 }
 
 var TITLES={
+  planning:"Planning semaine",
+  statistiques:"Statistiques & Graphiques",
   dashboard:"Tableau de bord",
   scanner:"Pointage QR",
   employes:"Salaries",
@@ -684,7 +721,7 @@ function go(id,el){
   if(pg)pg.classList.add("active");
   if(el)el.classList.add("active");
   document.getElementById("page-title").textContent=TITLES[id]||id;
-  var fns={dashboard:renderDash,scanner:renderScanner,employes:renderEmps,historique:renderHist,rapports:renderRep,absences:renderAbsences,paie:renderPaie};
+  var fns={dashboard:renderDash,planning:renderPlanning,statistiques:renderStats,scanner:renderScanner,employes:renderEmps,historique:renderHist,rapports:renderRep,absences:renderAbsences,paie:renderPaie};
   if(fns[id])fns[id]();
 }
 
@@ -971,7 +1008,7 @@ function renderEmps(){
       +"<div style='display:flex;align-items:center;gap:9px;margin-bottom:8px'>"+avHtml
       +"<div><div style='font-size:14px;font-weight:600'>"+e.name+"</div>"
       +"<div style='font-size:12px;color:#999'>"+e.role+" - "+e.dept+"</div></div></div>"
-      +"<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px'>"+bdg(st)+pinD+"</div>"
+      +"<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px'>"+bdg(st)+pinD+cpD+"</div>"
       +"<div style='font-size:11px;color:#185FA5;margin-bottom:3px'>"+sch+"</div>"
       +"<div style='font-size:12px;color:"+(st==="absent"?"#A32D2D":"#aaa")+";margin-bottom:6px'>"+ptLine+"</div>"
       +"<div class='emp-tabs'>"
@@ -1288,6 +1325,83 @@ function renderRep(){
       +"<td>"+(rets>0?"<span class='badge ba'>"+rets+"</span>":"<span class='badge bg'>0</span>")+"</td></tr>";
   }).join("");
 }
+
+function exportExcel(){
+  var wb = [];
+  var today2 = new Date().toLocaleDateString("fr-FR");
+
+  // ═══ FEUILLE 1 : SALARIES ═══
+  var s1 = "SALARIES - "+SITE_NAME+"\n";
+  s1 += "Exporte le "+today2+"\n\n";
+  s1 += "ID,Nom,Poste,Departement,Code PIN,Horaire Lun,Horaire Mar,Horaire Mer,Horaire Jeu,Horaire Ven\n";
+  employees.forEach(function(e){
+    var pl=e.planning||defaultPlan();
+    function sch(d){var t=pl[d];return t&&t.active?t.start+"-"+t.end:"Repos";}
+    s1+=e.id+","+e.name+","+e.role+","+e.dept+","+(e.pin||"")
+      +","+sch(1)+","+sch(2)+","+sch(3)+","+sch(4)+","+sch(5)+"\n";
+  });
+
+  // ═══ FEUILLE 2 : POINTAGES ═══
+  var s2 = "POINTAGES - "+SITE_NAME+"\n";
+  s2 += "Exporte le "+today2+"\n\n";
+  s2 += "Date,Salarie,Departement,Type,Heure,Statut,GPS Lat,GPS Lng\n";
+  var tl={arrivee:"Arrivee",depart:"Depart",pause_debut:"Debut pause",pause_fin:"Fin pause"};
+  [...pointages].sort(function(a,b){return b.d.localeCompare(a.d);}).forEach(function(p){
+    var e=employees.find(function(x){return x.id===p.eid;});
+    s2+=p.d+","+(e?e.name:p.eid)+","+(e?e.dept:"")
+      +","+(tl[p.type]||p.type)+","+p.h+","+(p.st||"")
+      +","+(p.lat||"")+","+(p.lng||"")+"\n";
+  });
+
+  // ═══ FEUILLE 3 : ABSENCES ═══
+  var s3 = "ABSENCES - "+SITE_NAME+"\n";
+  s3 += "Exporte le "+today2+"\n\n";
+  s3 += "Salarie,Departement,Type,Date debut,Date fin,Jours ouvres,Motif,Justificatif\n";
+  var absTypes={cp:"Conges payes",rtt:"RTT",mal:"Maladie",acc:"Accident travail",inj:"Absence injustifiee",css:"Sans solde",mat:"Maternite",pat:"Paternite",fer:"Ferie"};
+  [...absences].sort(function(a,b){return b.debut.localeCompare(a.debut);}).forEach(function(a){
+    var e=employees.find(function(x){return x.id===a.empId;});
+    var j=joursOuvres(a.debut,a.fin);
+    s3+=(e?e.name:a.empId)+","+(e?e.dept:"")
+      +","+(absTypes[a.type]||a.type)+","+a.debut+","+a.fin
+      +","+j+","+(a.motif||"")
+      +","+(a.justif?"Oui":"Non")+"\n";
+  });
+
+  // ═══ FEUILLE 4 : RECAP MENSUEL ═══
+  var now2=new Date();
+  var mv2=now2.getFullYear()+"-"+String(now2.getMonth()+1).padStart(2,"0");
+  var s4 = "RECAP MENSUEL - "+SITE_NAME+" - "+fmtMois(mv2)+"\n";
+  s4 += "Exporte le "+today2+"\n\n";
+  s4 += "Salarie,Poste,Departement,Jours presence,Heures travaillees,Retards,Abs. injust.,CP,RTT,Maladie,Accident travail,Sans solde,Maternite,Paternite,Ferie\n";
+  var year2=now2.getFullYear(),month2=now2.getMonth()+1;
+  employees.forEach(function(e){
+    var pts2=pointages.filter(function(p){return p.eid===e.id&&p.d.startsWith(mv2);});
+    var byDay2={};
+    pts2.forEach(function(p){if(!byDay2[p.d])byDay2[p.d]={arr:null,dep:null};if(p.type==="arrivee")byDay2[p.d].arr=p.h;if(p.type==="depart")byDay2[p.d].dep=p.h;});
+    var tm2=0;
+    Object.values(byDay2).forEach(function(d){if(d.arr&&d.dep){var ah=+d.arr.split(":")[0],am=+d.arr.split(":")[1],dh=+d.dep.split(":")[0],dm=+d.dep.split(":")[1],m=(dh*60+dm)-(ah*60+am);if(m>0)tm2+=m;}});
+    var ht2=Math.floor(tm2/60)+"h"+String(tm2%60).padStart(2,"0");
+    var jp2=Object.keys(byDay2).filter(function(d){return byDay2[d].arr;}).length;
+    var ret2=pts2.filter(function(p){return p.st==="retard";}).length;
+    var absMois2=absences.filter(function(a){return a.empId===e.id&&(a.debut.startsWith(mv2)||a.fin.startsWith(mv2));});
+    function jt2(t){return absMois2.filter(function(a){return a.type===t;}).reduce(function(s,a){return s+joursOuvres(a.debut,a.fin);},0);}
+    var absInj2=0;
+    var fd4=new Date(year2,month2-1,1),ld4=new Date(year2,month2,0);
+    for(var d4=new Date(fd4);d4<=ld4;d4.setDate(d4.getDate()+1)){var dow4=d4.getDay();if(dow4===0||dow4===6)continue;var ds4=d4.toISOString().split("T")[0];if(!absences.some(function(a){return a.empId===e.id&&ds4>=a.debut&&ds4<=a.fin;})&&!(byDay2[ds4]&&byDay2[ds4].arr)&&ds4<=today())absInj2++;}
+    s4+=e.name+","+e.role+","+e.dept+","+jp2+","+ht2+","+ret2+","+absInj2
+      +","+jt2("cp")+","+jt2("rtt")+","+jt2("mal")+","+jt2("acc")
+      +","+jt2("css")+","+jt2("mat")+","+jt2("pat")+","+jt2("fer")+"\n";
+  });
+
+  // Creer un fichier CSV multi-feuilles (separees par ligne vide)
+  var full = s1 + "\n\n" + s2 + "\n\n" + s3 + "\n\n" + s4;
+  var a2=document.createElement("a");
+  a2.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent(full);
+  a2.download="BACKUP_"+SITE_NAME.replace(/\s/g,"_")+"_"+today()+".csv";
+  a2.click();
+  notif("Sauvegarde Excel telechargee");
+}
+
 function exportJSON(){
   var data={employees:employees,pointages:pointages,absences:absences,params:params,siteName:SITE_NAME,exportDate:new Date().toISOString()};
   var a=document.createElement("a");
@@ -1296,8 +1410,201 @@ function exportJSON(){
   a.click();
   notif("Sauvegarde JSON telechargee");
 }
+
+// 
+// 1. MOT DE PASSE ADMIN
+// 
+var ADMIN_PASS = "1234"; // modifiable dans parametres
+var isAdmin = false;
+
+function checkAdmin(callback){
+  if(isAdmin){callback();return;}
+  var p=prompt("Mot de passe administrateur :");
+  if(p===null)return;
+  if(p===params.adminPass||p===ADMIN_PASS){
+    isAdmin=true;
+    callback();
+  }else{
+    notif("Mot de passe incorrect",false);
+  }
+}
+
+// 
+// 2. COMPTEUR CP RESTANTS
+// 
+var CP_ANNUEL = 25; // jours de CP par an (configurable)
+
+function getCPRestants(empId){
+  var year = new Date().getFullYear();
+  var debut = year+"-01-01";
+  var fin = year+"-12-31";
+  var absMois = absences.filter(function(a){
+    return a.empId===empId && a.type==="cp" && a.debut>=debut && a.fin<=fin;
+  });
+  var pris = absMois.reduce(function(s,a){return s+joursOuvres(a.debut,a.fin);},0);
+  return (params.cpAnnuel||CP_ANNUEL) - pris;
+}
+
+// 
+// 3. PLANNING VISUEL SEMAINE
+// 
+function renderPlanning(){
+  var container = document.getElementById("planning-container");
+  if(!container)return;
+  var now = new Date();
+  var monday = new Date(now);
+  var day = monday.getDay()||7;
+  monday.setDate(monday.getDate()-(day-1));
+
+  var days = [];
+  for(var i=0;i<7;i++){
+    var d = new Date(monday);
+    d.setDate(monday.getDate()+i);
+    days.push(d);
+  }
+
+  var jours = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  var html = "<div style='overflow-x:auto'><table style='width:100%;border-collapse:collapse;font-size:12px'>";
+  html += "<thead><tr><th style='padding:8px;background:#f8f7f2;border:1px solid #e8e6df;min-width:120px'>Salarie</th>";
+  days.forEach(function(d,i){
+    var ds = d.toISOString().split("T")[0];
+    var isToday = ds===today();
+    html += "<th style='padding:8px;background:"+(isToday?"#EAF3DE":"#f8f7f2")+";border:1px solid #e8e6df;text-align:center;min-width:90px'>";
+    html += jours[i]+"<br><span style='font-size:10px;font-weight:400;color:#999'>"+d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"})+"</span></th>";
+  });
+  html += "</tr></thead><tbody>";
+
+  employees.forEach(function(e){
+    var c = col(e.ci);
+    html += "<tr><td style='padding:8px;border:1px solid #e8e6df'><span style='display:inline-flex;align-items:center;gap:6px'>";
+    html += avRow(e)+e.name+"</span></td>";
+    days.forEach(function(d){
+      var ds = d.toISOString().split("T")[0];
+      var dow = d.getDay()||7;
+      var pl = e.planning||defaultPlan();
+      var tp = pl[dow];
+      var pts2 = pointages.filter(function(p){return p.eid===e.id&&p.d===ds;});
+      var arr = pts2.find(function(p){return p.type==="arrivee";});
+      var dep = pts2.find(function(p){return p.type==="depart";});
+      var absDay = absences.find(function(a){return a.empId===e.id&&ds>=a.debut&&ds<=a.fin;});
+      var cell="";var bg="#fff";var color="#1a1a1a";
+      if(absDay){
+        var t=ABS_TYPES[absDay.type]||{short:"ABS",bg:"#FCEBEB",color:"#A32D2D"};
+        bg=t.bg;color=t.color;cell=t.short;
+      }else if(!tp||!tp.active){
+        bg="#f8f7f2";color="#ccc";cell="Repos";
+      }else if(arr&&dep){
+        bg="#EAF3DE";color="#3B6D11";cell=arr.h+"-"+dep.h;
+      }else if(arr){
+        bg="#E6F1FB";color="#185FA5";cell=arr.h+" ->";
+      }else if(ds<today()){
+        bg="#FCEBEB";color="#A32D2D";cell="Absent";
+      }else{
+        bg="#fff";color="#aaa";cell=tp.start||"";
+      }
+      html += "<td style='padding:6px;border:1px solid #e8e6df;background:"+bg+";color:"+color+";text-align:center;font-size:11px;font-weight:600'>"+cell+"</td>";
+    });
+    html += "</tr>";
+  });
+  html += "</tbody></table></div>";
+  container.innerHTML = html;
+}
+
+// 
+// 4. COMMENTAIRES SUR POINTAGE
+// 
+function addComment(ptIdx){
+  var pt = pointages[ptIdx];
+  if(!pt)return;
+  var c = prompt("Commentaire pour ce pointage :",pt.comment||"");
+  if(c===null)return;
+  pt.comment = c.trim();
+  notif("Commentaire enregistre");
+  syncNow();renderHist();
+}
+
+// 
+// 5. STATS GRAPHIQUES MENSUELS
+// 
+function renderStats(){
+  var mv = document.getElementById("stats-mois")?document.getElementById("stats-mois").value:"";
+  if(!mv)return;
+  var container = document.getElementById("stats-container");
+  if(!container)return;
+
+  var html = "<div style='display:grid;grid-template-columns:1fr 1fr;gap:16px'>";
+
+  // Graphique prsence par semaine
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>Presence par salarie</div>";
+  var workedDays = new Set();
+  pointages.filter(function(p){return p.d.startsWith(mv)&&p.type==="arrivee";}).forEach(function(p){workedDays.add(p.d);});
+  var totalDays = workedDays.size||1;
+  employees.forEach(function(e){
+    var present = pointages.filter(function(p){return p.eid===e.id&&p.d.startsWith(mv)&&p.type==="arrivee";}).length;
+    var pct = Math.round(present/totalDays*100);
+    var c = col(e.ci);
+    html += "<div style='margin-bottom:10px'>";
+    html += "<div style='display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px'>";
+    html += "<span>"+e.name+"</span><span style='font-weight:700'>"+present+"j / "+pct+"%</span></div>";
+    html += "<div style='background:#f8f7f2;border-radius:20px;height:8px'>";
+    html += "<div style='background:"+c.tx+";border-radius:20px;height:8px;width:"+Math.min(pct,100)+"%'></div></div></div>";
+  });
+  html += "</div>";
+
+  // Graphique retards
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>Retards du mois</div>";
+  employees.forEach(function(e){
+    var rets = pointages.filter(function(p){return p.eid===e.id&&p.d.startsWith(mv)&&p.st==="retard";}).length;
+    if(rets===0){
+      html += "<div style='margin-bottom:8px;font-size:12px;display:flex;justify-content:space-between'><span>"+e.name+"</span><span style='color:#3B6D11;font-weight:600'>0 retard</span></div>";
+    }else{
+      html += "<div style='margin-bottom:8px;font-size:12px;display:flex;justify-content:space-between'><span>"+e.name+"</span><span style='color:#A32D2D;font-weight:600'>"+rets+" retard(s)</span></div>";
+    }
+  });
+  html += "</div>";
+
+  // CP restants
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>CP restants "+new Date().getFullYear()+"</div>";
+  employees.forEach(function(e){
+    var restants = getCPRestants(e.id);
+    var total = params.cpAnnuel||CP_ANNUEL;
+    var pct = Math.round(restants/total*100);
+    var color = restants>10?"#3B6D11":restants>5?"#854F0B":"#A32D2D";
+    html += "<div style='margin-bottom:10px'>";
+    html += "<div style='display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px'>";
+    html += "<span>"+e.name+"</span><span style='font-weight:700;color:"+color+"'>"+restants+"j restants</span></div>";
+    html += "<div style='background:#f8f7f2;border-radius:20px;height:8px'>";
+    html += "<div style='background:"+color+";border-radius:20px;height:8px;width:"+Math.min(Math.max(pct,0),100)+"%'></div></div></div>";
+  });
+  html += "</div>";
+
+  // Absences par type
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>Absences par type</div>";
+  var absMois = absences.filter(function(a){return a.debut.startsWith(mv)||a.fin.startsWith(mv);});
+  Object.keys(ABS_TYPES).forEach(function(k){
+    var t = ABS_TYPES[k];
+    var total = absMois.filter(function(a){return a.type===k;}).reduce(function(s,a){return s+joursOuvres(a.debut,a.fin);},0);
+    if(total>0){
+      html += "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px'>";
+      html += "<span style='display:inline-flex;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:"+t.bg+";color:"+t.color+"'>"+t.label+"</span>";
+      html += "<span style='font-size:13px;font-weight:700'>"+total+"j</span></div>";
+    }
+  });
+  if(absMois.length===0)html += "<div style='font-size:13px;color:#aaa'>Aucune absence ce mois</div>";
+  html += "</div>";
+
+  html += "</div>";
+  container.innerHTML = html;
+}
+
 function saveParams(){
   params.co=document.getElementById("p-co").value;
+  if(document.getElementById("p-cp"))params.cpAnnuel=parseInt(document.getElementById("p-cp").value)||25;
+  if(document.getElementById("p-pass")&&document.getElementById("p-pass").value)params.adminPass=document.getElementById("p-pass").value;
   params.tol=parseInt(document.getElementById("p-tol").value)||5;
   params.start=document.getElementById("p-start").value;
   params.end=document.getElementById("p-end").value;
@@ -1533,6 +1840,8 @@ function tick(){
 }
 
 var TITLES={
+  planning:"Planning semaine",
+  statistiques:"Statistiques & Graphiques",
   dashboard:"Tableau de bord",
   scanner:"Pointage QR",
   employes:"Salaries",
@@ -1550,7 +1859,7 @@ function go(id,el){
   if(pg)pg.classList.add("active");
   if(el)el.classList.add("active");
   document.getElementById("page-title").textContent=TITLES[id]||id;
-  var fns={dashboard:renderDash,scanner:renderScanner,employes:renderEmps,historique:renderHist,rapports:renderRep,absences:renderAbsences,paie:renderPaie};
+  var fns={dashboard:renderDash,planning:renderPlanning,statistiques:renderStats,scanner:renderScanner,employes:renderEmps,historique:renderHist,rapports:renderRep,absences:renderAbsences,paie:renderPaie};
   if(fns[id])fns[id]();
 }
 
@@ -1837,7 +2146,7 @@ function renderEmps(){
       +"<div style='display:flex;align-items:center;gap:9px;margin-bottom:8px'>"+avHtml
       +"<div><div style='font-size:14px;font-weight:600'>"+e.name+"</div>"
       +"<div style='font-size:12px;color:#999'>"+e.role+" - "+e.dept+"</div></div></div>"
-      +"<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px'>"+bdg(st)+pinD+"</div>"
+      +"<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px'>"+bdg(st)+pinD+cpD+"</div>"
       +"<div style='font-size:11px;color:#185FA5;margin-bottom:3px'>"+sch+"</div>"
       +"<div style='font-size:12px;color:"+(st==="absent"?"#A32D2D":"#aaa")+";margin-bottom:6px'>"+ptLine+"</div>"
       +"<div class='emp-tabs'>"
@@ -2154,6 +2463,83 @@ function renderRep(){
       +"<td>"+(rets>0?"<span class='badge ba'>"+rets+"</span>":"<span class='badge bg'>0</span>")+"</td></tr>";
   }).join("");
 }
+
+function exportExcel(){
+  var wb = [];
+  var today2 = new Date().toLocaleDateString("fr-FR");
+
+  //  FEUILLE 1 : SALARIES 
+  var s1 = "SALARIES - "+SITE_NAME+"\n";
+  s1 += "Exporte le "+today2+"\n\n";
+  s1 += "ID,Nom,Poste,Departement,Code PIN,Horaire Lun,Horaire Mar,Horaire Mer,Horaire Jeu,Horaire Ven\n";
+  employees.forEach(function(e){
+    var pl=e.planning||defaultPlan();
+    function sch(d){var t=pl[d];return t&&t.active?t.start+"-"+t.end:"Repos";}
+    s1+=e.id+","+e.name+","+e.role+","+e.dept+","+(e.pin||"")
+      +","+sch(1)+","+sch(2)+","+sch(3)+","+sch(4)+","+sch(5)+"\n";
+  });
+
+  //  FEUILLE 2 : POINTAGES 
+  var s2 = "POINTAGES - "+SITE_NAME+"\n";
+  s2 += "Exporte le "+today2+"\n\n";
+  s2 += "Date,Salarie,Departement,Type,Heure,Statut,GPS Lat,GPS Lng\n";
+  var tl={arrivee:"Arrivee",depart:"Depart",pause_debut:"Debut pause",pause_fin:"Fin pause"};
+  [...pointages].sort(function(a,b){return b.d.localeCompare(a.d);}).forEach(function(p){
+    var e=employees.find(function(x){return x.id===p.eid;});
+    s2+=p.d+","+(e?e.name:p.eid)+","+(e?e.dept:"")
+      +","+(tl[p.type]||p.type)+","+p.h+","+(p.st||"")
+      +","+(p.lat||"")+","+(p.lng||"")+"\n";
+  });
+
+  //  FEUILLE 3 : ABSENCES 
+  var s3 = "ABSENCES - "+SITE_NAME+"\n";
+  s3 += "Exporte le "+today2+"\n\n";
+  s3 += "Salarie,Departement,Type,Date debut,Date fin,Jours ouvres,Motif,Justificatif\n";
+  var absTypes={cp:"Conges payes",rtt:"RTT",mal:"Maladie",acc:"Accident travail",inj:"Absence injustifiee",css:"Sans solde",mat:"Maternite",pat:"Paternite",fer:"Ferie"};
+  [...absences].sort(function(a,b){return b.debut.localeCompare(a.debut);}).forEach(function(a){
+    var e=employees.find(function(x){return x.id===a.empId;});
+    var j=joursOuvres(a.debut,a.fin);
+    s3+=(e?e.name:a.empId)+","+(e?e.dept:"")
+      +","+(absTypes[a.type]||a.type)+","+a.debut+","+a.fin
+      +","+j+","+(a.motif||"")
+      +","+(a.justif?"Oui":"Non")+"\n";
+  });
+
+  //  FEUILLE 4 : RECAP MENSUEL 
+  var now2=new Date();
+  var mv2=now2.getFullYear()+"-"+String(now2.getMonth()+1).padStart(2,"0");
+  var s4 = "RECAP MENSUEL - "+SITE_NAME+" - "+fmtMois(mv2)+"\n";
+  s4 += "Exporte le "+today2+"\n\n";
+  s4 += "Salarie,Poste,Departement,Jours presence,Heures travaillees,Retards,Abs. injust.,CP,RTT,Maladie,Accident travail,Sans solde,Maternite,Paternite,Ferie\n";
+  var year2=now2.getFullYear(),month2=now2.getMonth()+1;
+  employees.forEach(function(e){
+    var pts2=pointages.filter(function(p){return p.eid===e.id&&p.d.startsWith(mv2);});
+    var byDay2={};
+    pts2.forEach(function(p){if(!byDay2[p.d])byDay2[p.d]={arr:null,dep:null};if(p.type==="arrivee")byDay2[p.d].arr=p.h;if(p.type==="depart")byDay2[p.d].dep=p.h;});
+    var tm2=0;
+    Object.values(byDay2).forEach(function(d){if(d.arr&&d.dep){var ah=+d.arr.split(":")[0],am=+d.arr.split(":")[1],dh=+d.dep.split(":")[0],dm=+d.dep.split(":")[1],m=(dh*60+dm)-(ah*60+am);if(m>0)tm2+=m;}});
+    var ht2=Math.floor(tm2/60)+"h"+String(tm2%60).padStart(2,"0");
+    var jp2=Object.keys(byDay2).filter(function(d){return byDay2[d].arr;}).length;
+    var ret2=pts2.filter(function(p){return p.st==="retard";}).length;
+    var absMois2=absences.filter(function(a){return a.empId===e.id&&(a.debut.startsWith(mv2)||a.fin.startsWith(mv2));});
+    function jt2(t){return absMois2.filter(function(a){return a.type===t;}).reduce(function(s,a){return s+joursOuvres(a.debut,a.fin);},0);}
+    var absInj2=0;
+    var fd4=new Date(year2,month2-1,1),ld4=new Date(year2,month2,0);
+    for(var d4=new Date(fd4);d4<=ld4;d4.setDate(d4.getDate()+1)){var dow4=d4.getDay();if(dow4===0||dow4===6)continue;var ds4=d4.toISOString().split("T")[0];if(!absences.some(function(a){return a.empId===e.id&&ds4>=a.debut&&ds4<=a.fin;})&&!(byDay2[ds4]&&byDay2[ds4].arr)&&ds4<=today())absInj2++;}
+    s4+=e.name+","+e.role+","+e.dept+","+jp2+","+ht2+","+ret2+","+absInj2
+      +","+jt2("cp")+","+jt2("rtt")+","+jt2("mal")+","+jt2("acc")
+      +","+jt2("css")+","+jt2("mat")+","+jt2("pat")+","+jt2("fer")+"\n";
+  });
+
+  // Creer un fichier CSV multi-feuilles (separees par ligne vide)
+  var full = s1 + "\n\n" + s2 + "\n\n" + s3 + "\n\n" + s4;
+  var a2=document.createElement("a");
+  a2.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent(full);
+  a2.download="BACKUP_"+SITE_NAME.replace(/\s/g,"_")+"_"+today()+".csv";
+  a2.click();
+  notif("Sauvegarde Excel telechargee");
+}
+
 function exportJSON(){
   var data={employees:employees,pointages:pointages,absences:absences,params:params,siteName:SITE_NAME,exportDate:new Date().toISOString()};
   var a=document.createElement("a");
@@ -2162,8 +2548,201 @@ function exportJSON(){
   a.click();
   notif("Sauvegarde JSON telechargee");
 }
+
+// 
+// 1. MOT DE PASSE ADMIN
+// 
+var ADMIN_PASS = "1234"; // modifiable dans parametres
+var isAdmin = false;
+
+function checkAdmin(callback){
+  if(isAdmin){callback();return;}
+  var p=prompt("Mot de passe administrateur :");
+  if(p===null)return;
+  if(p===params.adminPass||p===ADMIN_PASS){
+    isAdmin=true;
+    callback();
+  }else{
+    notif("Mot de passe incorrect",false);
+  }
+}
+
+// 
+// 2. COMPTEUR CP RESTANTS
+// 
+var CP_ANNUEL = 25; // jours de CP par an (configurable)
+
+function getCPRestants(empId){
+  var year = new Date().getFullYear();
+  var debut = year+"-01-01";
+  var fin = year+"-12-31";
+  var absMois = absences.filter(function(a){
+    return a.empId===empId && a.type==="cp" && a.debut>=debut && a.fin<=fin;
+  });
+  var pris = absMois.reduce(function(s,a){return s+joursOuvres(a.debut,a.fin);},0);
+  return (params.cpAnnuel||CP_ANNUEL) - pris;
+}
+
+// 
+// 3. PLANNING VISUEL SEMAINE
+// 
+function renderPlanning(){
+  var container = document.getElementById("planning-container");
+  if(!container)return;
+  var now = new Date();
+  var monday = new Date(now);
+  var day = monday.getDay()||7;
+  monday.setDate(monday.getDate()-(day-1));
+
+  var days = [];
+  for(var i=0;i<7;i++){
+    var d = new Date(monday);
+    d.setDate(monday.getDate()+i);
+    days.push(d);
+  }
+
+  var jours = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  var html = "<div style='overflow-x:auto'><table style='width:100%;border-collapse:collapse;font-size:12px'>";
+  html += "<thead><tr><th style='padding:8px;background:#f8f7f2;border:1px solid #e8e6df;min-width:120px'>Salarie</th>";
+  days.forEach(function(d,i){
+    var ds = d.toISOString().split("T")[0];
+    var isToday = ds===today();
+    html += "<th style='padding:8px;background:"+(isToday?"#EAF3DE":"#f8f7f2")+";border:1px solid #e8e6df;text-align:center;min-width:90px'>";
+    html += jours[i]+"<br><span style='font-size:10px;font-weight:400;color:#999'>"+d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"})+"</span></th>";
+  });
+  html += "</tr></thead><tbody>";
+
+  employees.forEach(function(e){
+    var c = col(e.ci);
+    html += "<tr><td style='padding:8px;border:1px solid #e8e6df'><span style='display:inline-flex;align-items:center;gap:6px'>";
+    html += avRow(e)+e.name+"</span></td>";
+    days.forEach(function(d){
+      var ds = d.toISOString().split("T")[0];
+      var dow = d.getDay()||7;
+      var pl = e.planning||defaultPlan();
+      var tp = pl[dow];
+      var pts2 = pointages.filter(function(p){return p.eid===e.id&&p.d===ds;});
+      var arr = pts2.find(function(p){return p.type==="arrivee";});
+      var dep = pts2.find(function(p){return p.type==="depart";});
+      var absDay = absences.find(function(a){return a.empId===e.id&&ds>=a.debut&&ds<=a.fin;});
+      var cell="";var bg="#fff";var color="#1a1a1a";
+      if(absDay){
+        var t=ABS_TYPES[absDay.type]||{short:"ABS",bg:"#FCEBEB",color:"#A32D2D"};
+        bg=t.bg;color=t.color;cell=t.short;
+      }else if(!tp||!tp.active){
+        bg="#f8f7f2";color="#ccc";cell="Repos";
+      }else if(arr&&dep){
+        bg="#EAF3DE";color="#3B6D11";cell=arr.h+"-"+dep.h;
+      }else if(arr){
+        bg="#E6F1FB";color="#185FA5";cell=arr.h+" ->";
+      }else if(ds<today()){
+        bg="#FCEBEB";color="#A32D2D";cell="Absent";
+      }else{
+        bg="#fff";color="#aaa";cell=tp.start||"";
+      }
+      html += "<td style='padding:6px;border:1px solid #e8e6df;background:"+bg+";color:"+color+";text-align:center;font-size:11px;font-weight:600'>"+cell+"</td>";
+    });
+    html += "</tr>";
+  });
+  html += "</tbody></table></div>";
+  container.innerHTML = html;
+}
+
+// 
+// 4. COMMENTAIRES SUR POINTAGE
+// 
+function addComment(ptIdx){
+  var pt = pointages[ptIdx];
+  if(!pt)return;
+  var c = prompt("Commentaire pour ce pointage :",pt.comment||"");
+  if(c===null)return;
+  pt.comment = c.trim();
+  notif("Commentaire enregistre");
+  syncNow();renderHist();
+}
+
+// 
+// 5. STATS GRAPHIQUES MENSUELS
+// 
+function renderStats(){
+  var mv = document.getElementById("stats-mois")?document.getElementById("stats-mois").value:"";
+  if(!mv)return;
+  var container = document.getElementById("stats-container");
+  if(!container)return;
+
+  var html = "<div style='display:grid;grid-template-columns:1fr 1fr;gap:16px'>";
+
+  // Graphique prsence par semaine
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>Presence par salarie</div>";
+  var workedDays = new Set();
+  pointages.filter(function(p){return p.d.startsWith(mv)&&p.type==="arrivee";}).forEach(function(p){workedDays.add(p.d);});
+  var totalDays = workedDays.size||1;
+  employees.forEach(function(e){
+    var present = pointages.filter(function(p){return p.eid===e.id&&p.d.startsWith(mv)&&p.type==="arrivee";}).length;
+    var pct = Math.round(present/totalDays*100);
+    var c = col(e.ci);
+    html += "<div style='margin-bottom:10px'>";
+    html += "<div style='display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px'>";
+    html += "<span>"+e.name+"</span><span style='font-weight:700'>"+present+"j / "+pct+"%</span></div>";
+    html += "<div style='background:#f8f7f2;border-radius:20px;height:8px'>";
+    html += "<div style='background:"+c.tx+";border-radius:20px;height:8px;width:"+Math.min(pct,100)+"%'></div></div></div>";
+  });
+  html += "</div>";
+
+  // Graphique retards
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>Retards du mois</div>";
+  employees.forEach(function(e){
+    var rets = pointages.filter(function(p){return p.eid===e.id&&p.d.startsWith(mv)&&p.st==="retard";}).length;
+    if(rets===0){
+      html += "<div style='margin-bottom:8px;font-size:12px;display:flex;justify-content:space-between'><span>"+e.name+"</span><span style='color:#3B6D11;font-weight:600'>0 retard</span></div>";
+    }else{
+      html += "<div style='margin-bottom:8px;font-size:12px;display:flex;justify-content:space-between'><span>"+e.name+"</span><span style='color:#A32D2D;font-weight:600'>"+rets+" retard(s)</span></div>";
+    }
+  });
+  html += "</div>";
+
+  // CP restants
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>CP restants "+new Date().getFullYear()+"</div>";
+  employees.forEach(function(e){
+    var restants = getCPRestants(e.id);
+    var total = params.cpAnnuel||CP_ANNUEL;
+    var pct = Math.round(restants/total*100);
+    var color = restants>10?"#3B6D11":restants>5?"#854F0B":"#A32D2D";
+    html += "<div style='margin-bottom:10px'>";
+    html += "<div style='display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px'>";
+    html += "<span>"+e.name+"</span><span style='font-weight:700;color:"+color+"'>"+restants+"j restants</span></div>";
+    html += "<div style='background:#f8f7f2;border-radius:20px;height:8px'>";
+    html += "<div style='background:"+color+";border-radius:20px;height:8px;width:"+Math.min(Math.max(pct,0),100)+"%'></div></div></div>";
+  });
+  html += "</div>";
+
+  // Absences par type
+  html += "<div style='background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:16px'>";
+  html += "<div style='font-size:12px;font-weight:600;color:#aaa;text-transform:uppercase;margin-bottom:12px'>Absences par type</div>";
+  var absMois = absences.filter(function(a){return a.debut.startsWith(mv)||a.fin.startsWith(mv);});
+  Object.keys(ABS_TYPES).forEach(function(k){
+    var t = ABS_TYPES[k];
+    var total = absMois.filter(function(a){return a.type===k;}).reduce(function(s,a){return s+joursOuvres(a.debut,a.fin);},0);
+    if(total>0){
+      html += "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px'>";
+      html += "<span style='display:inline-flex;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:"+t.bg+";color:"+t.color+"'>"+t.label+"</span>";
+      html += "<span style='font-size:13px;font-weight:700'>"+total+"j</span></div>";
+    }
+  });
+  if(absMois.length===0)html += "<div style='font-size:13px;color:#aaa'>Aucune absence ce mois</div>";
+  html += "</div>";
+
+  html += "</div>";
+  container.innerHTML = html;
+}
+
 function saveParams(){
   params.co=document.getElementById("p-co").value;
+  if(document.getElementById("p-cp"))params.cpAnnuel=parseInt(document.getElementById("p-cp").value)||25;
+  if(document.getElementById("p-pass")&&document.getElementById("p-pass").value)params.adminPass=document.getElementById("p-pass").value;
   params.tol=parseInt(document.getElementById("p-tol").value)||5;
   params.start=document.getElementById("p-start").value;
   params.end=document.getElementById("p-end").value;
@@ -2506,6 +3085,7 @@ if(params.radius)document.getElementById("p-radius").value=params.radius;
 document.getElementById("h-date").valueAsDate=new Date();
 document.title="PRO TIME - "+SITE_NAME;
 fillAbsMonths();
+if(document.getElementById("p-cp"))document.getElementById("p-cp").value=params.cpAnnuel||25;
 fillSels();tick();renderDash();
 window.addEventListener("load",function(){initFB();syncNow();});
 setInterval(function(){renderDash();},60000);
