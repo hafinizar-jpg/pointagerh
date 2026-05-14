@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KICA8cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNCIgZmlsbD0iIzFhNmIzYSIvPgogIDxyZWN0IHg9IjE0IiB5PSI4IiB3aWR0aD0iMjgiIGhlaWdodD0iMzQiIHJ4PSI0IiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4xNSIvPgogIDxyZWN0IHg9IjE0IiB5PSI4IiB3aWR0aD0iMjgiIGhlaWdodD0iMzQiIHJ4PSI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMjAiIHkxPSIxOCIgeDI9IjM2IiB5Mj0iMTgiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjIwIiB5MT0iMjUiIHgyPSIzNiIgeTI9IjI1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIyMCIgeTE9IjMyIiB4Mj0iMzAiIHkyPSIzMiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8Y2lyY2xlIGN4PSI0MiIgY3k9IjQ0IiByPSIxNCIgZmlsbD0iI0MwREQ5NyIvPgogIDxwb2x5bGluZSBwb2ludHM9IjM2LDQ0IDQwLDQ5IDQ5LDM4IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYTZiM2EiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRO TIME - Reporting DG</title>
+<meta name="theme-color" content="#1a6b3a">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0Ij4KICA8cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNCIgZmlsbD0iIzFhNmIzYSIvPgogIDxyZWN0IHg9IjE0IiB5PSI4IiB3aWR0aD0iMjgiIGhlaWdodD0iMzQiIHJ4PSI0IiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC4xNSIvPgogIDxyZWN0IHg9IjE0IiB5PSI4IiB3aWR0aD0iMjgiIGhlaWdodD0iMzQiIHJ4PSI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMjAiIHkxPSIxOCIgeDI9IjM2IiB5Mj0iMTgiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjIwIiB5MT0iMjUiIHgyPSIzNiIgeTI9IjI1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIyMCIgeTE9IjMyIiB4Mj0iMzAiIHkyPSIzMiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8Y2lyY2xlIGN4PSI0MiIgY3k9IjQ0IiByPSIxNCIgZmlsbD0iI0MwREQ5NyIvPgogIDxwb2x5bGluZSBwb2ludHM9IjM2LDQ0IDQwLDQ5IDQ5LDM4IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYTZiM2EiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f0;color:#1a1a1a}
+.header{background:#1a1a1a;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:17px;font-weight:700}
+.header-right{display:flex;align-items:center;gap:14px;font-size:13px}
+.content{padding:20px;max-width:1400px;margin:0 auto}
+.fb-bar{background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid #e8e6df;border-radius:10px;padding:14px 15px}
+.stat-label{font-size:11px;color:#999;margin-bottom:5px}
+.stat-value{font-size:26px;font-weight:700}
+.stat-sub{font-size:11px;color:#bbb;margin-top:3px}
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:12px 22px;border-radius:10px;border:none;cursor:pointer;font-size:15px;font-weight:600;font-family:inherit;transition:all .2s;color:#fff;opacity:.75}
+.tab:hover{opacity:1;transform:translateY(-2px)}
+.tab.active{opacity:1;box-shadow:0 4px 12px rgba(0,0,0,.2);transform:translateY(-2px)}
+.tab-blue{background:#185FA5;}
+.tab-red{background:#A32D2D;}
+.tab-green{background:#3B6D11;}
+.tab-purple{background:#534AB7;}
+.panel{display:none}
+.panel.active{display:block}
+.tw{border:1px solid #e8e6df;border-radius:10px;overflow:hidden;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:9px 13px;color:#999;font-weight:600;border-bottom:1px solid #e8e6df;font-size:11px;background:#f8f7f2;text-transform:uppercase;letter-spacing:.04em}
+td{padding:10px 13px;border-bottom:1px solid #f0ede6}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf7}
+.badge{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.bg{background:#EAF3DE;color:#3B6D11}
+.ba{background:#FAEEDA;color:#854F0B}
+.bgr{background:#F1EFE8;color:#5F5E5A}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#1a1a1a;font-family:inherit}
+.btn:hover{background:#f5f5f0}
+.bk{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+@media(max-width:800px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-title">PRO TIME - Reporting DG - 10 sites</div>
+  <div class="header-right">
+    <span id="clock">--:--</span>
+    <button class="btn" style="background:#333;color:#fff;border-color:#555" onclick="exportCSV()">Export CSV global</button>
+        <button class="btn" style="background:#185FA5;color:#fff;border-color:#185FA5" onclick="exportGlobalJSON()">Sauvegarde JSON globale</button>
+  </div>
+</div>
+<div class="content">
+  <div class="fb-bar">
+    <div>
+      <div style="font-size:12px;color:#999;margin-bottom:3px">Statut Firebase</div>
+      <div style="font-size:13px;font-weight:600" id="fb-status">Connexion en cours...</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="text-align:center">
+        <div style="font-size:20px;font-weight:700" id="nb-synced">0</div>
+        <div style="font-size:11px;color:#999">Sites connectes</div>
+      </div>
+      <button class="btn bk" onclick="startListener()">Actualiser</button>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Total salaries</div><div class="stat-value" id="g-emp">0</div><div class="stat-sub">10 sites</div></div>
+    <div class="stat-card"><div class="stat-label">Presents ce jour</div><div class="stat-value" id="g-pres">0</div><div class="stat-sub">Pointes</div></div>
+    <div class="stat-card"><div class="stat-label">Absents ce jour</div><div class="stat-value" id="g-abs">0</div><div class="stat-sub">Non pointes</div></div>
+    <div class="stat-card"><div class="stat-label">Retards ce jour</div><div class="stat-value" id="g-ret">0</div><div class="stat-sub">Arrivees tardives</div></div>
+  </div>
+  <div class="tabs">
+    <button class="tab tab-blue active" onclick="showTab('vue-globale',this)">&#128202; Vue globale</button>
+    <button class="tab tab-red" onclick="showTab('absents',this)">&#10060; Absents (<span id="nb-abs">0</span>)</button>
+    <button class="tab tab-green" onclick="showTab('presents',this)">&#9989; Presents (<span id="nb-pres">0</span>)</button>
+    <button class="tab tab-purple" onclick="showTab('historique',this)">&#128203; Historique</button>
+  </div>
+  <div class="panel active" id="panel-vue-globale">
+    <div class="tw"><table>
+      <thead><tr><th>Site</th><th>Salaries</th><th>Presents</th><th>Absents</th><th>Retards</th><th>Derniere sync</th><th>Statut</th></tr></thead>
+      <tbody id="sites-tbody"></tbody>
+    </table></div>
+  </div>
+  <div class="panel" id="panel-absents">
+    <div class="tw"><table>
+      <thead><tr><th>Site</th><th>Salarie</th><th>Poste</th><th>Departement</th><th>Statut</th></tr></thead>
+      <tbody id="abs-tbody"></tbody>
+    </table></div>
+  </div>
+  <div class="panel" id="panel-presents">
+    <div class="tw"><table>
+      <thead><tr><th>Site</th><th>Salarie</th><th>Arrivee</th><th>Depart</th><th>Statut</th></tr></thead>
+      <tbody id="pres-tbody"></tbody>
+    </table></div>
+  </div>
+  <div class="panel" id="panel-historique">
+    <div class="tw"><table>
+      <thead><tr><th>Site</th><th>Salarie</th><th>Type</th><th>Heure</th><th>Date</th></tr></thead>
+      <tbody id="hist-tbody"></tbody>
+    </table></div>
+  </div>
+</div>
+<script>
+function showTab(id,el){
+  document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active");});
+  document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active");});
+  document.getElementById("panel-"+id).classList.add("active");
+  if(el)el.classList.add("active");
+}
+
+var SITES=[
+  "VILLENEUVE LA GARENNE","NANTERRE","EPINAY SUR SEINE","BEAUVAIS",
+  "AMIENS 1","ST OUEN L AUMONE","BUCHELAY COIGNIERES","MEAUX","LAM","COIGNIERES"
+];
+
+var FBCFG={
+  apiKey:"AIzaSyDDhHMWpeRcykDUD2ylobLwrQdZRWnV4M4",
+  authDomain:"pointage-rh-ad905.firebaseapp.com",
+  databaseURL:"https://pointage-rh-ad905-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"pointage-rh-ad905",
+  storageBucket:"pointage-rh-ad905.firebasestorage.app",
+  messagingSenderId:"1010190450089",
+  appId:"1:1010190450089:web:380beacf6bfda0310158b8"
+};
+
+var allData={};
+var fbDB=null;
+
+function initFB(){
+  try{
+    if(typeof firebase==="undefined"){setStatus("err","Firebase SDK non charge");return;}
+    if(!firebase.apps.length){firebase.initializeApp(FBCFG);}
+    fbDB=firebase.database();
+    setStatus("ok","Connexion Firebase...");
+    startListener();
+  }catch(e){setStatus("err","Erreur: "+e.message);}
+}
+
+function startListener(){
+  if(!fbDB)return;
+  setStatus("wait","Ecoute en temps reel...");
+  fbDB.ref("sites").on("value",function(snapshot){
+    var data=snapshot.val()||{};
+    allData={};
+    var synced=0;
+    SITES.forEach(function(site){
+      var key=site.replace(/[^a-zA-Z0-9]/g,"_");
+      if(data[key]){
+        allData[site]=data[key];
+        allData[site].employees=allData[site].employees||[];
+        allData[site].pointages=allData[site].pointages||[];
+        synced++;
+      }else{
+        allData[site]={employees:[],pointages:[],siteName:site,lastSync:null};
+      }
+    });
+    document.getElementById("nb-synced").textContent=synced;
+    setStatus("ok","Firebase connecte - "+synced+"/10 sites - MaJ "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}));
+    renderAll();
+  },function(err){
+    setStatus("err","Erreur Firebase: "+err.message+" - Verifiez les regles Realtime Database");
+  });
+}
+
+function setStatus(type,msg){
+  var el=document.getElementById("fb-status");
+  var colors={ok:"#3B6D11",err:"#A32D2D",wait:"#854F0B"};
+  if(el){el.textContent=msg;el.style.color=colors[type]||"#666";}
+}
+
+function today(){return new Date().toISOString().split("T")[0];}
+
+function renderAll(){
+  renderCards();
+  renderAbsents();
+  renderPresents();
+  renderHist();
+}
+
+function renderCards(){
+  var totalEmp=0,totalPres=0,totalAbs=0,totalRet=0;
+  var td=today();
+  SITES.forEach(function(site){
+    var d=allData[site]||{employees:[],pointages:[]};
+    var emps=d.employees||[];
+    var pts=d.pointages||[];
+    totalEmp+=emps.length;
+    emps.forEach(function(e){
+      var arr=pts.find(function(p){return p.eid===e.id&&p.d===td&&p.type==="arrivee";});
+      if(arr){
+        totalPres++;
+        if(arr.st==="retard")totalRet++;
+      }else{
+        totalAbs++;
+      }
+    });
+  });
+  document.getElementById("g-emp").textContent=totalEmp;
+  document.getElementById("g-pres").textContent=totalPres;
+  document.getElementById("g-abs").textContent=totalAbs;
+  document.getElementById("g-ret").textContent=totalRet;
+
+  // Tableau par site
+  var rows=SITES.map(function(site){
+    var d=allData[site]||{employees:[],pointages:[],lastSync:null};
+    var emps=d.employees||[];
+    var pts=d.pointages||[];
+    var td2=today();
+    var pres=0,abs=0,ret=0;
+    emps.forEach(function(e){
+      var arr=pts.find(function(p){return p.eid===e.id&&p.d===td2&&p.type==="arrivee";});
+      if(arr){pres++;if(arr.st==="retard")ret++;}
+      else abs++;
+    });
+    var sync=d.lastSync?new Date(d.lastSync).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}):"--";
+    var statut=emps.length>0
+      ?"<span style='color:#3B6D11;font-weight:600'>Actif</span>"
+      :"<span style='color:#aaa'>Vide</span>";
+    return "<tr>"
+      +"<td><strong>"+site+"</strong></td>"
+      +"<td>"+emps.length+"</td>"
+      +"<td><span style='color:#3B6D11;font-weight:600'>"+pres+"</span></td>"
+      +"<td><span style='color:#A32D2D'>"+abs+"</span></td>"
+      +"<td><span style='color:#854F0B'>"+ret+"</span></td>"
+      +"<td style='font-size:11px;color:#aaa'>"+sync+"</td>"
+      +"<td>"+statut+"</td>"
+      +"</tr>";
+  }).join("");
+  document.getElementById("sites-tbody").innerHTML=rows;
+}
+
+function renderAbsents(){
+  var td=today();
+  var rows=[];
+  SITES.forEach(function(site){
+    var d=allData[site]||{employees:[],pointages:[]};
+    var emps=d.employees||[];
+    var pts=d.pointages||[];
+    emps.forEach(function(e){
+      var arr=pts.find(function(p){return p.eid===e.id&&p.d===td&&p.type==="arrivee";});
+      if(!arr){
+        rows.push("<tr>"
+          +"<td><strong>"+site+"</strong></td>"
+          +"<td>"+e.name+"</td>"
+          +"<td>"+e.role+"</td>"
+          +"<td>"+e.dept+"</td>"
+          +"<td><span style='display:inline-flex;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#FCEBEB;color:#A32D2D'>Absent</span></td>"
+          +"</tr>");
+      }
+    });
+  });
+  document.getElementById("abs-tbody").innerHTML=rows.join("")||"<tr><td colspan='5' style='text-align:center;color:#aaa;padding:22px'>Aucun absent ce jour</td></tr>";
+  document.getElementById("nb-abs").textContent=rows.length;
+}
+
+function renderPresents(){
+  var td=today();
+  var rows=[];
+  SITES.forEach(function(site){
+    var d=allData[site]||{employees:[],pointages:[]};
+    var pts=d.pointages||[];
+    var emps=d.employees||[];
+    pts.filter(function(p){return p.d===td&&p.type==="arrivee";}).forEach(function(p){
+      var e=emps.find(function(x){return x.id===p.eid;});
+      if(!e)return;
+      var dep=pts.find(function(p2){return p2.eid===p.eid&&p2.d===td&&p2.type==="depart";});
+      var st=dep?"Sorti":p.st==="retard"?"Retard":"Present";
+      var stcls=dep?"bgr":p.st==="retard"?"ba":"bg";
+      rows.push("<tr>"
+        +"<td><strong>"+site+"</strong></td>"
+        +"<td>"+e.name+"</td>"
+        +"<td>"+p.h+"</td>"
+        +"<td>"+(dep?dep.h:"--")+"</td>"
+        +"<td><span style='display:inline-flex;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600' class='badge "+stcls+"'>"+st+"</span></td>"
+        +"</tr>");
+    });
+  });
+  document.getElementById("pres-tbody").innerHTML=rows.join("")||"<tr><td colspan='5' style='text-align:center;color:#aaa;padding:22px'>Aucun pointage ce jour</td></tr>";
+  document.getElementById("nb-pres").textContent=rows.length;
+}
+
+function renderHist(){
+  var rows=[];
+  SITES.forEach(function(site){
+    var d=allData[site]||{employees:[],pointages:[]};
+    var pts=d.pointages||[];
+    var emps=d.employees||[];
+    var tl={arrivee:"Arrivee",depart:"Depart",pause_debut:"Pause",pause_fin:"Retour"};
+    [...pts].reverse().slice(0,5).forEach(function(p){
+      var e=emps.find(function(x){return x.id===p.eid;});
+      if(!e)return;
+      rows.push("<tr>"
+        +"<td><strong>"+site+"</strong></td>"
+        +"<td>"+e.name+"</td>"
+        +"<td>"+(tl[p.type]||p.type)+"</td>"
+        +"<td>"+p.h+"</td>"
+        +"<td>"+p.d+"</td>"
+        +"</tr>");
+    });
+  });
+  rows.sort(function(a,b){return b.localeCompare(a);});
+  document.getElementById("hist-tbody").innerHTML=rows.slice(0,50).join("")||"<tr><td colspan='5' style='text-align:center;color:#aaa;padding:22px'>Aucun historique</td></tr>";
+}
+
+function exportGlobalJSON(){
+  var data={sites:allData,exportDate:new Date().toISOString(),exportedBy:"Reporting DG"};
+  var a=document.createElement("a");
+  a.href="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(data,null,2));
+  a.download="sauvegarde_globale_DG_"+new Date().toISOString().split("T")[0]+".json";
+  a.click();
+}
+function exportCSV(){
+  var td=today();
+  var rows=[["Site","Salarie","Poste","Departement","Arrivee","Depart","Statut","Date"]];
+  SITES.forEach(function(site){
+    var d=allData[site]||{employees:[],pointages:[]};
+    var pts=d.pointages||[];
+    var emps=d.employees||[];
+    emps.forEach(function(e){
+      var arr=pts.find(function(p){return p.eid===e.id&&p.d===td&&p.type==="arrivee";});
+      var dep=pts.find(function(p){return p.eid===e.id&&p.d===td&&p.type==="depart";});
+      rows.push([site,e.name,e.role,e.dept,arr?arr.h:"",dep?dep.h:"",arr?(arr.st==="retard"?"Retard":"Present"):"Absent",td]);
+    });
+  });
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+c+'"';}).join(",");}).join("\n");
+  var a=document.createElement("a");
+  a.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent(csv);
+  a.download="reporting_DG_"+td+".csv";
+  a.click();
+}
+
+function tick(){
+  var now=new Date();
+  document.getElementById("clock").textContent=now.toLocaleTimeString("fr-FR");
+  setTimeout(tick,1000);
+}
+
+tick();
+window.addEventListener("load",function(){initFB();});
+</script>
+</body>
+</html>
