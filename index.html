@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRO TIME - Logiciel de pointage RH professionnel</title>
+<meta name="description" content="PRO TIME - Logiciel de pointage RH simple et securise. Gerez la presence, les absences et les conges de vos salaries sur 10 sites en temps reel.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#fff;color:#1a1a1a;scroll-behavior:smooth}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:1px solid #e8e6df;padding:0 40px;height:65px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-icon{width:36px;height:36px;background:#1a6b3a;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.nav-logo-icon svg{width:24px;height:24px}
+.nav-logo-name{font-size:20px;font-weight:700;color:#1a6b3a}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{text-decoration:none;color:#666;font-size:14px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:#1a6b3a}
+.nav-cta{background:#1a6b3a;color:#fff;padding:9px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:700;transition:all .2s}
+.nav-cta:hover{background:#155930}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a6b3a 0%,#0f4423 100%);color:#fff;padding:140px 40px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(192,221,151,.1) 0%,transparent 60%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(192,221,151,.2);border:1px solid rgba(192,221,151,.4);color:#C0DD97;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:24px}
+.hero h1{font-size:52px;font-weight:700;margin-bottom:20px;line-height:1.15}
+.hero h1 span{color:#C0DD97}
+.hero p{font-size:19px;opacity:.85;max-width:620px;margin:0 auto 40px;line-height:1.7}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:60px}
+.btn-hero{padding:15px 34px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;font-family:Arial,sans-serif;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-primary{background:#C0DD97;color:#1a1a1a}
+.btn-primary:hover{background:#a8c97a;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.btn-secondary{background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.35)}
+.btn-secondary:hover{background:rgba(255,255,255,.2)}
+.hero-stats{display:flex;justify-content:center;gap:50px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.15);padding-top:40px}
+.hero-stat{text-align:center}
+.hero-stat-value{font-size:32px;font-weight:700;color:#C0DD97}
+.hero-stat-label{font-size:13px;opacity:.7;margin-top:4px}
+
+/* SECTION */
+.section{padding:70px 40px}
+.section-center{text-align:center}
+.section-tag{display:inline-block;background:#EAF3DE;color:#1a6b3a;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.section h2{font-size:34px;font-weight:700;margin-bottom:14px}
+.section p.lead{font-size:17px;color:#666;max-width:580px;margin:0 auto 50px;line-height:1.7}
+
+/* FONCTIONNALITES */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto}
+.feature-card{background:#f8f7f2;border-radius:14px;padding:28px;border:1px solid #e8e6df;transition:all .2s}
+.feature-card:hover{border-color:#1a6b3a;background:#fff;box-shadow:0 8px 24px rgba(26,107,58,.1);transform:translateY(-3px)}
+.feature-icon{font-size:36px;margin-bottom:14px}
+.feature-title{font-weight:700;font-size:17px;margin-bottom:8px;color:#1a1a1a}
+.feature-desc{font-size:14px;color:#888;line-height:1.7}
+.feature-list{margin-top:12px;padding-left:16px}
+.feature-list li{font-size:13px;color:#666;margin:4px 0;line-height:1.5}
+
+/* SECURITE */
+.security{background:#f8f7f2;padding:70px 40px}
+.security-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:900px;margin:0 auto}
+.sec-item{background:#fff;border-radius:12px;padding:20px 24px;display:flex;align-items:flex-start;gap:16px;border:1px solid #e8e6df}
+.sec-icon{width:44px;height:44px;border-radius:10px;background:#EAF3DE;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sec-title{font-weight:700;font-size:15px;margin-bottom:5px}
+.sec-desc{font-size:13px;color:#888;line-height:1.6}
+
+/* DEPOTS */
+.depots-section{padding:70px 40px;background:#fff}
+.depots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;max-width:1100px;margin:0 auto}
+.depot-card{background:#fff;border:1.5px solid #e8e6df;border-radius:12px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;transition:all .2s;text-decoration:none;color:#1a1a1a}
+.depot-card:hover{border-color:#1a6b3a;box-shadow:0 6px 20px rgba(26,107,58,.12);transform:translateY(-2px)}
+.depot-info{display:flex;align-items:center;gap:14px}
+.depot-badge{width:46px;height:46px;border-radius:10px;background:#EAF3DE;color:#1a6b3a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.depot-name{font-weight:700;font-size:15px;margin-bottom:4px}
+.depot-online{font-size:12px;color:#3B6D11;background:#EAF3DE;padding:2px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:4px}
+.depot-online::before{content:'';width:6px;height:6px;background:#3B6D11;border-radius:50%;display:inline-block}
+.depot-arrow{color:#1a6b3a;font-size:22px;font-weight:700}
+
+/* COMMENT CA MARCHE */
+.how{background:#1a6b3a;color:#fff;padding:70px 40px}
+.how h2{font-size:34px;font-weight:700;text-align:center;margin-bottom:50px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1100px;margin:0 auto}
+.step{text-align:center;position:relative}
+.step::after{content:'→';position:absolute;right:-14px;top:30px;font-size:24px;color:rgba(255,255,255,.3)}
+.step:last-child::after{display:none}
+.step-num{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 16px}
+.step-title{font-size:16px;font-weight:700;margin-bottom:8px}
+.step-desc{font-size:13px;opacity:.75;line-height:1.6}
+
+/* TEMOIGNAGES */
+.testimonials{padding:70px 40px;background:#f8f7f2}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto}
+.testi-card{background:#fff;border-radius:14px;padding:28px;border:1px solid #e8e6df}
+.testi-stars{color:#F5A623;font-size:18px;margin-bottom:14px}
+.testi-text{font-size:14px;color:#444;line-height:1.7;margin-bottom:16px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:38px;height:38px;border-radius:50%;background:#EAF3DE;color:#1a6b3a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.testi-name{font-weight:700;font-size:14px}
+.testi-role{font-size:12px;color:#999}
+
+/* DG */
+.dg-section{background:linear-gradient(135deg,#1a6b3a,#0f4423);color:#fff;padding:70px 40px;text-align:center}
+.dg-section h2{font-size:32px;font-weight:700;margin-bottom:14px}
+.dg-section p{opacity:.85;margin-bottom:30px;font-size:16px;max-width:500px;margin-left:auto;margin-right:auto}
+.btn-dg{display:inline-block;background:#fff;color:#1a6b3a;padding:15px 38px;border-radius:10px;font-weight:700;font-size:15px;text-decoration:none;transition:all .2s}
+.btn-dg:hover{background:#C0DD97;transform:translateY(-2px)}
+
+/* FAQ */
+.faq{padding:70px 40px}
+.faq-grid{max-width:800px;margin:0 auto}
+.faq-item{border:1px solid #e8e6df;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.faq-q{padding:18px 20px;font-weight:700;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:#fff}
+.faq-q:hover{background:#f8f7f2}
+.faq-a{padding:0 20px 18px;font-size:14px;color:#666;line-height:1.7;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-q{color:#1a6b3a}
+.faq-arrow{transition:transform .2s;color:#1a6b3a}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+
+/* CONTACT */
+.contact{background:#f8f7f2;padding:70px 40px;text-align:center}
+.contact h2{font-size:32px;font-weight:700;margin-bottom:14px}
+.contact p{color:#666;margin-bottom:30px;font-size:16px}
+.contact-info{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.contact-item{display:flex;align-items:center;gap:10px;font-size:15px}
+.contact-icon{font-size:22px}
+
+/* FOOTER */
+.footer{background:#1a1a1a;color:#fff;padding:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.footer-logo{font-size:20px;font-weight:700;color:#C0DD97}
+.footer-links{display:flex;gap:24px}
+.footer-links a{color:#aaa;text-decoration:none;font-size:13px}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-size:12px;color:#666}
+
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero{padding:100px 20px 60px}
+  .hero h1{font-size:32px}
+  .hero-stats{gap:24px}
+  .features-grid,.steps,.testi-grid,.security-grid{grid-template-columns:1fr}
+  .section,.security,.depots-section,.how,.faq,.contact{padding:50px 20px}
+  .step::after{display:none}
+  .footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <rect x="10" y="6" width="30" height="36" rx="4" stroke="white" stroke-width="2.5"/>
+        <line x1="17" y1="16" x2="33" y2="16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="17" y1="24" x2="33" y2="24" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="17" y1="32" x2="27" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="46" cy="46" r="14" fill="#C0DD97"/>
+        <polyline points="40,46 44,51 53,40" stroke="#1a6b3a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="nav-logo-name">PRO TIME</div>
+  </div>
+  <div class="nav-links">
+    <a href="#fonctionnalites">Fonctionnalites</a>
+    <a href="#securite">Securite</a>
+    <a href="#depots">Mes depots</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#depots" class="nav-cta">Acceder au logiciel</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Logiciel RH 100% cloud &#9989;</div>
+  <h1>Le pointage RH<br><span>simple, securise et connecte</span></h1>
+  <p>Gerez la presence, les absences et les conges de vos salaries sur tous vos sites en temps reel. Sans installation, accessible partout.</p>
+  <div class="hero-btns">
+    <a href="#depots" class="btn-hero btn-primary">Acceder a mon depot</a>
+    <a href="reporting_DG.html" class="btn-hero btn-secondary">Reporting Direction</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-value">10</div><div class="hero-stat-label">Sites connectes</div></div>
+    <div class="hero-stat"><div class="hero-stat-value">100%</div><div class="hero-stat-label">Cloud Firebase</div></div>
+    <div class="hero-stat"><div class="hero-stat-value">24/7</div><div class="hero-stat-label">Disponible</div></div>
+    <div class="hero-stat"><div class="hero-stat-value">0€</div><div class="hero-stat-label">Installation</div></div>
+  </div>
+</div>
+
+<!-- FONCTIONNALITES -->
+<div class="section" id="fonctionnalites">
+  <div class="section-center">
+    <div class="section-tag">Fonctionnalites</div>
+    <h2>Tout ce dont vous avez besoin</h2>
+    <p class="lead">Un logiciel complet pour gerer vos equipes sur le terrain, de l'arrivee au depart, des absences a la paie.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#128247;</div>
+      <div class="feature-title">Pointage securise</div>
+      <div class="feature-desc">Systeme complet avec verification d'identite a chaque pointage.</div>
+      <ul class="feature-list">
+        <li>Code PIN unique par salarie</li>
+        <li>Photo automatique horodatee</li>
+        <li>GPS anti-triche avec rayon configurable</li>
+        <li>Anti-doublon 30 secondes</li>
+        <li>Detection automatique des retards</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128101;</div>
+      <div class="feature-title">Gestion des salaries</div>
+      <div class="feature-desc">Fiches salaries completes et planning hebdomadaire personnalise.</div>
+      <ul class="feature-list">
+        <li>Photo d'identite et badge QR</li>
+        <li>Planning par jour avec pauses</li>
+        <li>Modification en temps reel</li>
+        <li>Affichage presents / absents</li>
+        <li>CP restants par salarie</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#127958;</div>
+      <div class="feature-title">Absences et conges</div>
+      <div class="feature-desc">Tous les types d'absence geres avec calcul automatique des jours ouvres.</div>
+      <ul class="feature-list">
+        <li>Conges payes, RTT, Maladie</li>
+        <li>Accident de travail</li>
+        <li>Absence injustifiee</li>
+        <li>Maternite, Paternite, Ferie</li>
+        <li>Suivi des justificatifs</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128182;</div>
+      <div class="feature-title">Fiche de paie</div>
+      <div class="feature-desc">Calcul automatique et export pour votre comptabilite.</div>
+      <ul class="feature-list">
+        <li>Heures travaillees automatiques</li>
+        <li>Recapitulatif mensuel</li>
+        <li>Export CSV comptabilite</li>
+        <li>Impression individuelle ou globale</li>
+        <li>Historique par mois</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128200;</div>
+      <div class="feature-title">Statistiques et rapports</div>
+      <div class="feature-desc">Visualisez les performances de vos equipes en un coup d'oeil.</div>
+      <ul class="feature-list">
+        <li>Planning semaine visuel colore</li>
+        <li>Graphiques de presence</li>
+        <li>Suivi des retards</li>
+        <li>Repartition des absences</li>
+        <li>CP restants par salarie</li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#9729;</div>
+      <div class="feature-title">Cloud et sauvegarde</div>
+      <div class="feature-desc">Vos donnees sont securisees et synchronisees en temps reel.</div>
+      <ul class="feature-list">
+        <li>Firebase Google Cloud</li>
+        <li>Sync automatique toutes les 5 min</li>
+        <li>Export Excel complet</li>
+        <li>Sauvegarde JSON complete</li>
+        <li>Reporting DG centralise</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SECURITE -->
+<div class="security" id="securite">
+  <div class="section-center">
+    <div class="section-tag">Securite</div>
+    <h2>Concu pour eviter la fraude</h2>
+    <p class="lead" style="margin-bottom:40px">Plusieurs niveaux de securite pour garantir des donnees de pointage fiables et incontestables.</p>
+  </div>
+  <div class="security-grid">
+    <div class="sec-item">
+      <div class="sec-icon">&#128273;</div>
+      <div>
+        <div class="sec-title">Code PIN unique</div>
+        <div class="sec-desc">Chaque salarie possede un code a 4 chiffres personnel. Impossible de pointer a la place d'un collegue.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">&#128247;</div>
+      <div>
+        <div class="sec-title">Photo horodatee</div>
+        <div class="sec-desc">A chaque pointage, une photo est prise automatiquement avec date, heure et nom du site en incrustation.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">&#128205;</div>
+      <div>
+        <div class="sec-title">GPS anti-triche</div>
+        <div class="sec-desc">Le pointage est refuse si le salarie est en dehors du perimetre autorise du site (rayon configurable).</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">&#9201;</div>
+      <div>
+        <div class="sec-title">Anti-doublon</div>
+        <div class="sec-desc">Impossible de pointer deux fois de suite en moins de 30 secondes. Evite les erreurs de manipulation.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">&#128680;</div>
+      <div>
+        <div class="sec-title">Detection automatique</div>
+        <div class="sec-desc">Si un salarie ne pointe pas dans les 5 minutes apres son heure prevue, il passe automatiquement en Absent.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">&#128274;</div>
+      <div>
+        <div class="sec-title">Mot de passe admin</div>
+        <div class="sec-desc">Les onglets sensibles (salaries, paie, absences) sont proteges par un mot de passe administrateur.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMENT CA MARCHE -->
+<div class="how">
+  <h2>Comment ca marche ?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Ouvrez votre lien</div>
+      <div class="step-desc">Cliquez sur votre depot ci-dessous. Le logiciel s'ouvre directement dans Chrome, sans installation.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Ajoutez vos salaries</div>
+      <div class="step-desc">Creez les fiches avec photo, planning et code PIN. En 2 minutes le salarie est pret a pointer.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Pointage quotidien</div>
+      <div class="step-desc">Le salarie selectionne son nom, saisit son PIN et clique Arrivee, Pause, Retour ou Depart.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-title">Suivi en temps reel</div>
+      <div class="step-desc">Le tableau de bord et le Reporting DG se mettent a jour instantanement sur tous les sites.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DEPOTS -->
+<div class="depots-section" id="depots">
+  <div class="section-center">
+    <div class="section-tag">Acces direct</div>
+    <h2>Selectionnez votre depot</h2>
+    <p class="lead">Cliquez sur votre site pour acceder directement a votre logiciel de pointage PRO TIME.</p>
+  </div>
+  <div class="depots-grid">
+    <a href="pointage_VILLENEUVE_LA_GARENNE.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">VLG</div>
+        <div><div class="depot-name">Villeneuve la Garenne</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_NANTERRE.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">NAN</div>
+        <div><div class="depot-name">Nanterre</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_EPINAY_SUR_SEINE.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">EPI</div>
+        <div><div class="depot-name">Epinay sur Seine</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_BEAUVAIS.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">BEA</div>
+        <div><div class="depot-name">Beauvais</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_AMIENS.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">AMI</div>
+        <div><div class="depot-name">Amiens</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_ST_OUEN_L_AUMONE.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">STO</div>
+        <div><div class="depot-name">St Ouen l'Aumone</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_BUCHELAY.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">BUC</div>
+        <div><div class="depot-name">Buchelay</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_MEAUX.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">MEA</div>
+        <div><div class="depot-name">Meaux</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_LAM.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">LAM</div>
+        <div><div class="depot-name">LAM</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+    <a href="pointage_COIGNIERES.html" class="depot-card">
+      <div class="depot-info">
+        <div class="depot-badge">COI</div>
+        <div><div class="depot-name">Coignieres</div><span class="depot-online">En ligne</span></div>
+      </div>
+      <div class="depot-arrow">&#8594;</div>
+    </a>
+  </div>
+</div>
+
+<!-- TEMOIGNAGES -->
+<div class="testimonials">
+  <div class="section-center">
+    <div class="section-tag">Temoignages</div>
+    <h2>Ils utilisent PRO TIME</h2>
+    <p class="lead">Ce que disent nos responsables de depot.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="testi-text">"PRO TIME a revolutionne notre gestion des presences. Plus besoin de feuilles papier, tout est automatique et les donnees sont toujours a jour."</div>
+      <div class="testi-author">
+        <div class="testi-avatar">MR</div>
+        <div><div class="testi-name">Responsable depot</div><div class="testi-role">Villeneuve la Garenne</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="testi-text">"Le systeme GPS anti-triche est excellent. Les salaries savent qu'ils doivent etre sur place pour pointer. Les retards ont diminue de 40%."</div>
+      <div class="testi-author">
+        <div class="testi-avatar">SB</div>
+        <div><div class="testi-name">Responsable depot</div><div class="testi-role">Beauvais</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="testi-text">"L'export CSV pour la comptabilite nous fait gagner des heures chaque mois. Tout est calcule automatiquement, meme les absences injustifiees."</div>
+      <div class="testi-author">
+        <div class="testi-avatar">AB</div>
+        <div><div class="testi-name">Responsable RH</div><div class="testi-role">Direction Generale</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REPORTING DG -->
+<div class="dg-section">
+  <div class="section-tag" style="background:rgba(192,221,151,.2);color:#C0DD97;border:1px solid rgba(192,221,151,.3)">Direction Generale</div>
+  <h2>Reporting en temps reel</h2>
+  <p>Visualisez tous vos sites depuis un seul ecran. Presents, absents, retards — mis a jour automatiquement.</p>
+  <a href="reporting_DG.html" class="btn-dg">Acceder au Reporting DG</a>
+</div>
+
+<!-- FAQ -->
+<div class="faq" id="faq">
+  <div class="section-center">
+    <div class="section-tag">FAQ</div>
+    <h2>Questions frequentes</h2>
+    <p class="lead">Tout ce que vous devez savoir sur PRO TIME.</p>
+  </div>
+  <div class="faq-grid">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Comment acceder au logiciel ? <span class="faq-arrow">&#9660;</span></div>
+      <div class="faq-a">Cliquez simplement sur votre depot dans la liste ci-dessus. Le logiciel s'ouvre directement dans Chrome, sans aucune installation. Vous pouvez aussi l'installer sur votre bureau via les 3 points de Chrome > Installer PRO TIME.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Le logiciel fonctionne-t-il sans Internet ? <span class="faq-arrow">&#9660;</span></div>
+      <div class="faq-a">En mode local (sans Internet), les donnees sont sauvegardees sur l'ordinateur. Des que la connexion revient, cliquez Synchroniser et les donnees remontent sur le Reporting DG automatiquement.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Comment ajouter un salarie ? <span class="faq-arrow">&#9660;</span></div>
+      <div class="faq-a">Ouvrez votre depot > onglet Salaries > + Ajouter. Renseignez nom, poste, departement, photo, code PIN et planning hebdomadaire. Le salarie peut pointer immediatement.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Comment exporter les donnees pour la comptabilite ? <span class="faq-arrow">&#9660;</span></div>
+      <div class="faq-a">Onglet Fiche de paie > selectionnez le mois > cliquez Export CSV comptabilite. Le fichier Excel contient toutes les heures, retards et absences par salarie, pret a envoyer a votre service comptabilite.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Que faire si un salarie oublie son code PIN ? <span class="faq-arrow">&#9660;</span></div>
+      <div class="faq-a">Allez dans l'onglet Salaries > cliquez Fiche sur la carte du salarie > modifiez le code PIN > cliquez Enregistrer. Communiquez le nouveau code au salarie en prive.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Les donnees sont-elles securisees ? <span class="faq-arrow">&#9660;</span></div>
+      <div class="faq-a">Oui. Les donnees sont stockees sur Firebase (serveurs Google) avec chiffrement. Seuls les responsables autorises y ont acces. Les photos de pointage sont stockees localement sur l'ordinateur du depot.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="contact" id="contact">
+  <div class="section-tag">Contact</div>
+  <h2>Besoin d'aide ?</h2>
+  <p>Notre equipe est disponible pour vous accompagner dans la prise en main du logiciel.</p>
+  <div class="contact-info">
+    <div class="contact-item"><span class="contact-icon">&#128231;</span><strong>hafi.nizar@gmail.com</strong></div>
+    <div class="contact-item"><span class="contact-icon">&#127760;</span><strong>hafinizar-jpg.github.io/pointagerh</strong></div>
+    <div class="contact-item"><span class="contact-icon">&#9200;</span><strong>Disponible 24h/24 - 7j/7</strong></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">PRO TIME</div>
+  <div class="footer-links">
+    <a href="#fonctionnalites">Fonctionnalites</a>
+    <a href="#securite">Securite</a>
+    <a href="#depots">Depots</a>
+    <a href="#contact">Contact</a>
+    <a href="reporting_DG.html">Reporting DG</a>
+  </div>
+  <div class="footer-copy">&#169; 2026 PRO TIME - Logiciel de pointage RH</div>
+</div>
+
+<script>
+function toggleFaq(el){
+  var isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open');});
+  if(!isOpen) el.classList.add('open');
+}
+
+// Animation scroll
+window.addEventListener('scroll', function(){
+  var nav = document.querySelector('.nav');
+  if(window.scrollY > 10){
+    nav.style.boxShadow = '0 4px 20px rgba(0,0,0,.12)';
+  }else{
+    nav.style.boxShadow = '0 2px 10px rgba(0,0,0,.06)';
+  }
+});
+</script>
+
+</body>
+</html>
